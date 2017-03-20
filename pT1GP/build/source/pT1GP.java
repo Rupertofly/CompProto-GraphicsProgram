@@ -15,6 +15,8 @@ import java.io.IOException;
 public class pT1GP extends PApplet {
 
 PGraphics pCanvas;
+PGraphics pFinal;
+PShader sShader;
 int cCanvas_colour = color(20,20,20);
 int cF_color = color(0,0,0);
 PVector vOld_Pos = new PVector(0,0);
@@ -23,17 +25,28 @@ public void setup() {
         
         frameRate(120);
         background(cCanvas_colour);
-        pCanvas = createGraphics(1024,768);
+        pCanvas = createGraphics(1024,768,P2D);
+        pFinal = createGraphics(1024,768,P2D);
         pCanvas.beginDraw();
         pCanvas.clear();
         pCanvas.endDraw();
+        pFinal.beginDraw();
+        pFinal.clear();
+        pFinal.endDraw();
 
 }
 public void draw() {
+        sShader = loadShader("myShader.glsl");
+        pFinal.shader(sShader);
+        sShader.set("iResolution",PApplet.parseFloat(width),PApplet.parseFloat(height),0);
+        sShader.set("tex",pCanvas);
+        pFinal.beginDraw();
+        pFinal.rect(0,0,width,height);
+        pFinal.endDraw();
         background(cCanvas_colour);
         noStroke();
         fill(255);
-        image(pCanvas,0,0);
+        image(pFinal,0,0);
         ellipse(mouseX,mouseY,20,20);
 
 }
