@@ -18,10 +18,24 @@ class r_button {
     rect(x,y,b_width,b_height,5);
   }
   void update(){
-    if (x-(b_width/2) < mouseX && mouseX < x+(b_width/2) && y-(b_height/2) < mouseY && mouseY < y+(b_height/2)){
-      fill((b_color >> 8)+20,(b_color>>16)+20,(b_color>>24)+20);
+    if(test_pos()){
+      fill(
+            ((b_color >>16)& 0xFF)+15,
+            ((b_color >>8 )& 0xFF)+15,
+            ((b_color     )& 0xFF)+15
+           );
     } else{
       fill(b_color);
+    }
+  }
+  boolean test_pos(){
+    if(
+      x-(b_width/2) < mouseX && mouseX < x+(b_width/2) &&
+      y-(b_height/2) < mouseY && mouseY < y+(b_height/2)
+    ){
+      return true;
+    } else {
+      return false;
     }
   }
 }
