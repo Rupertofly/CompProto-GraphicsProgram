@@ -86,7 +86,7 @@ class r_slide{
 		_p.stroke(255);
 		_p.strokeWeight(iStroke);
 		_p.fill(aCol);
-		_p.rect(x,y,sWid,sHei);
+		_p.rect(x,y,sWid,sHei,2);
 		_p.rectMode(CORNER);
 		_p.noStroke();
 		_p.fill(bCol);

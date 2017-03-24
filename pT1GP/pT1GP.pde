@@ -8,11 +8,11 @@ color cCanvas_colour = color(20,20,20);
 color cF_color = color(0,0,0);
 PVector vOld_Pos = new PVector(0,0);
 ArrayList<r_button> b_array = new ArrayList<r_button>();
-r_slide slider;
+ArrayList<r_slide> s_array = new ArrayList<r_slide>();
 
 //-----------------------------
 void setup() {
-  size(1280,1280,P2D);
+  size(1200,760,P2D);
   frameRate(120);
   background(cCanvas_colour);
   pCanvas = createGraphics(width-200,height,P2D);
@@ -49,8 +49,11 @@ void draw() {
   image(pCursor,0,0);
   pGui.beginDraw();
   pGui.clear();
-  slider.update();
-  slider.draw(pGui);
+  for (int i = 0; i<s_array.size(); i++){
+   r_slide slider = s_array.get(i);
+   slider.update();
+   slider.draw(pGui);
+  }
   for (int i = 0; i<b_array.size(); i++) {
 	r_button but = b_array.get(i);
 	but.update();
@@ -58,6 +61,14 @@ void draw() {
   }
   pGui.endDraw();
   image(pGui,width-200,0);
+  int[] col = new int[3];
+  for (int i = 0;i<s_array.size();i++){
+    r_slide slider = s_array.get(i);
+    col[i] = ceil(map(slider.getVal(),0,150,0,255));
+  }
+  rectMode(CENTER);
+  fill(color(col[0],col[1],col[2]));
+  rect(width/2,height/2,50,50);
 }
 //-----------------------------
 void mouseDragged(){
@@ -67,7 +78,9 @@ void mouseDragged(){
   pCanvas.strokeWeight(20);
   pCanvas.line(mouseX,mouseY,pmouseX,pmouseY);
   pCanvas.endDraw();
-  slider.val_update();
+  for (r_slide slider : s_array){
+    slider.val_update();
+  }
   vOld_Pos = new PVector(mouseX,mouseY);
 }
 //-----------------------------
@@ -93,8 +106,10 @@ void gui_init(){
   rect(width-195,5,width-5,height-5);
   for (int i = 0; i<5; i++) {
 	for (int o = 0; o<8; o++) {
-	  b_array.add(new r_button((i*40)+25,(o*40)+25,color(random(255),random(255),random(255))));
+	  b_array.add(new r_button((i*40)+15,(o*40)+25,color(random(255),random(255),random(255))));
 	}
   }
-  slider = new r_slide(100,500,70,color(0,200,0),color(0,240,0));
+  s_array.add(new r_slide(100,500,70,color(200,0,0),color(240,0,0)));
+  s_array.add(new r_slide(100,600,70,color(0,200,0),color(0,240,0)));
+  s_array.add(new r_slide(100,700,70,color(0,0,200),color(0,0,240)));
 }
