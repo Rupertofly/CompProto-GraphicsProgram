@@ -15,7 +15,7 @@ void setup() {
   background(cCanvas_colour);
   pCanvas = createGraphics(width-200,height,P2D);
   pFinal = createGraphics(width-200,height,P2D);
-	pCursor = createGraphics(width-200,height,P2D);
+  pCursor = createGraphics(width-200,height,P2D);
   pCanvas.beginDraw();
   pCanvas.clear();
   pCanvas.endDraw();
@@ -36,17 +36,17 @@ void draw() {
   noStroke();
 
   image(pFinal,0,0);
-	pCursor.beginDraw();
-	pCursor.clear();
+  pCursor.beginDraw();
+  pCursor.clear();
   pCursor.fill(255,200);
   pCursor.noStroke();
   pCursor.ellipse(mouseX,mouseY,20,20);
-	pCursor.endDraw();
-	image(pCursor,0,0);
-  for (int i = 0; i<b_array.size();i++){
-    r_button but = b_array.get(i);
-    but.update();
-    but.draw();
+  pCursor.endDraw();
+  image(pCursor,0,0);
+  for (int i = 0; i<b_array.size(); i++) {
+	r_button but = b_array.get(i);
+	but.update();
+	but.draw();
   }
 }
 //-----------------------------
