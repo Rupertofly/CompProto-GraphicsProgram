@@ -103,3 +103,51 @@ class r_slide{
 		return sVal;
 	}
 }
+
+class r_mixer{
+
+  int x;
+  int y;
+  int[] aIn = new int[3];
+  int[] bIn = new int[3];
+  int wid = 150;
+  int hei = 50;
+  String shaderP;
+  PShader shader;
+//--
+  r_mixer(int _x, int _y, String _sPath){
+    x = _x;
+    y = _y;
+    shaderP = _sPath;
+    aIn[0] = 0;
+    aIn[1] = 0;
+    aIn[2] = 100;
+    bIn[0] = 0;
+    bIn[1] = 250;
+    bIn[2] = 0;
+  }
+	//--
+  void draw(PGraphics _p){
+    shader = loadShader(shaderP);
+		//shader.set("iResolution",150.0,50.0,0.0);
+		shader.set("aCol",float(aIn[0])/255.0,float(aIn[1])/255.0,float(aIn[2])/255.0,0.0);
+		shader.set("bCol",float(bIn[0])/255.0,float(bIn[1])/255.0,float(bIn[2])/255.0,0.0);
+    shader.set("pos",float(x),float(y));
+    shader.set("size",float(wid),float(hei));
+    shader.set("time",float(millis()));
+		_p.shader(shader);
+		_p.noStroke();
+		_p.rect(0,0,wid,hei);
+  }
+	int getX(){
+		return x;
+	}
+	int getY(){
+		return y;
+	}
+	void setA( int _r, int _g, int _b){
+		aIn[0] = _r;
+		aIn[1] = _g;
+		aIn[2] = _b;
+	}
+}

@@ -3,22 +3,26 @@ PGraphics pCanvas;
 PGraphics pFinal;
 PGraphics pCursor;
 PGraphics pGui;
+PGraphics pMixer;
 PShader sShader;
+PShader sMixShader;
 color cCanvas_colour = color(20,20,20);
 color cF_color = color(0,0,0);
 PVector vOld_Pos = new PVector(0,0);
 ArrayList<r_button> b_array = new ArrayList<r_button>();
 ArrayList<r_slide> s_array = new ArrayList<r_slide>();
+r_mixer mixer;
 
 //-----------------------------
 void setup() {
-  size(1200,760,P2D);
+  size(1200,800,P2D);
   frameRate(120);
   background(cCanvas_colour);
   pCanvas = createGraphics(width-200,height,P2D);
   pFinal = createGraphics(width-200,height,P2D);
   pCursor = createGraphics(width-200,height,P2D);
   pGui = createGraphics(200,height,P2D);
+  pMixer = createGraphics(150,50,P2D);
   gui_init();
   pCanvas.beginDraw();
   pCanvas.clear();
@@ -31,7 +35,7 @@ void setup() {
 void draw() {
   sShader = loadShader("myShader.glsl");
   pFinal.shader(sShader);
-  sShader.set("iResolution",float(width-200),float(height),0);
+  sShader.set("iResolution",float(width-200),float(height),1.0,1.0);
   sShader.set("tex",pCanvas);
   pFinal.beginDraw();
   pFinal.rect(0,0,width-200,height);
@@ -47,8 +51,19 @@ void draw() {
   pCursor.ellipse(mouseX,mouseY,20,20);
   pCursor.endDraw();
   image(pCursor,0,0);
+  int[] Acolor = new int[3];
+  for (int i = 0; i < 3; i ++){
+    r_slide a = s_array.get(i);
+    Acolor[i] = floor(map(a.getVal(),0,150,0,255));
+  }
+  mixer.setA(Acolor[0],Acolor[1],Acolor[2]);
+  pMixer.beginDraw();
+  mixer.draw(pMixer);
+  pMixer.endDraw();
   pGui.beginDraw();
   pGui.clear();
+  pGui.imageMode(CENTER);
+  pGui.image(pMixer,mixer.getX(),mixer.getY());
   for (int i = 0; i<s_array.size(); i++){
    r_slide slider = s_array.get(i);
    slider.update();
@@ -112,4 +127,5 @@ void gui_init(){
   s_array.add(new r_slide(100,500,70,color(200,0,0),color(240,0,0)));
   s_array.add(new r_slide(100,600,70,color(0,200,0),color(0,240,0)));
   s_array.add(new r_slide(100,700,70,color(0,0,200),color(0,0,240)));
+  mixer = new r_mixer (100,400,"mixShader.glsl");
 }
