@@ -73,7 +73,7 @@ class c_slide{
     c_l = _cl;
     i_val = _i;
     ov = color(240, 50);
-    c_c = lerpColor(c_l,c_h,i_val/w);
+    c_c = lerpColor(c_l,c_h,float(i_val)/float(h));
   }
   //---
   boolean over(){
@@ -85,11 +85,12 @@ class c_slide{
   }
   //---
   void draw(PGraphics _p){
+    c_c = lerpColor(c_l,c_h,float(i_val)/float(h));
     _p.fill(0);
     _p.noStroke();
     _p.rect(x,y,w,h);
     _p.fill(c_c);
-    _p.rect(x,y+(w-i_val),w,h-(w-i_val));
+    _p.rect(x,y+(h-i_val),w,h-(h-i_val));
     _p.noFill();
     if (over()){
       _p.stroke(col_gui[3]);
@@ -149,15 +150,15 @@ class c_mix{
   }
   //---
   void update_shader(){
-    shad.set("a_col",red(c_a)/255,blue(c_a)/255,green(c_a)/255,1.0);
-    shad.set("b_col",red(c_b)/255,blue(c_b)/255,green(c_b)/255,1.0);
+    shad.set("a_col",red(c_a)/255,green(c_a)/255,blue(c_a)/255,1.0);
+    shad.set("b_col",red(c_b)/255,green(c_b)/255,blue(c_b)/255,1.0);
     shad.set("i_res",float(w),float(h));
   }
   //---
   void draw(PGraphics _p){
     update_shader();
     _p.shader(shad);
-    _p.rect(x,y,w,h);
+    _p.rect(0,0,w,h);
     _p.resetShader();
     _p.noFill();
     if(over()) {
@@ -168,17 +169,23 @@ class c_mix{
     _p.strokeWeight(3);
     _p.rect(x,y,w,h);
     _p.noStroke();
-    //-
+  }
+  //---
+  void draw_but(PGraphics _p){
+    b0s.disableStyle();
+    b1s.disableStyle();
+    b0s.setFill(color(0,0));
+    b1s.setFill(color(0,0));
     if (over_b()[0]){
-      b0s.setStroke(col_gui[3]);
+      _p.stroke(col_gui[3]);
     } else {
-      b0s.setStroke(col_gui[2]);
+      _p.stroke(col_gui[2]);
     }
     _p.shape(b0s,b0x,b0y);
     if (over_b()[1]){
-      b1s.setStroke(col_gui[3]);
+      _p.stroke(col_gui[3]);
     } else {
-      b1s.setStroke(col_gui[2]);
+      _p.stroke(col_gui[2]);
     }
     _p.shape(b1s,b1x,b1y);
   }
@@ -216,6 +223,7 @@ class c_mix{
   void update_col(){
     if(over_b()[0]){
       c_a = col_current;
+      println("boom");
     }
     if (over_b()[1]){
       c_b = col_current;
