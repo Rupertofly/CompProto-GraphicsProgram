@@ -102,7 +102,7 @@ class c_slide{
   }
   //---
   void set_val(int _v){
-    i_val = _v;
+    i_val = int(map(_v,0,255,0,100));
   }
   //---
   int get_val(){
@@ -111,7 +111,7 @@ class c_slide{
   //---
   void adj_val(){
     if (over()){
-      i_val = w-(mouseY-ay);
+      i_val = h-(mouseY-ay);
     }
   }
 }
@@ -158,6 +158,7 @@ class c_mix{
   void draw(PGraphics _p){
     update_shader();
     _p.shader(shad);
+    _p.fill(0);
     _p.rect(0,0,w,h);
     _p.resetShader();
     _p.noFill();
@@ -167,7 +168,7 @@ class c_mix{
       _p.stroke(col_gui[2]);
     }
     _p.strokeWeight(3);
-    _p.rect(x,y,w,h);
+    _p.rect(0,0,w,h);
     _p.noStroke();
   }
   //---
@@ -217,16 +218,36 @@ class c_mix{
   if(over()){
     float val = map(float(mouseX-ax),0.0,float(w),0.0,1.0);
     col_current = lerpColor(c_a,c_b,val);
+    b_col_change = true;
     }
   }
   //---
   void update_col(){
     if(over_b()[0]){
       c_a = col_current;
-      println("boom");
     }
     if (over_b()[1]){
       c_b = col_current;
     }
+  }
+}
+class c_brush {
+  int x, y, w, h;
+  PImage ig_brush;
+  color col_paint;
+  PGraphics bf_outputb;
+
+  c_brush(PImage _in, color _c){
+    x=0;
+    y=0;
+    w=_in.width;
+    h=_in.height;
+    ig_brush = _in;
+    col_paint = _c;
+    bf_outputb = createGraphics(w,h);
+    bf_outputb.beginDraw();
+    bf_outputb.clear();
+    bf_ouptub.endDraw
+
   }
 }

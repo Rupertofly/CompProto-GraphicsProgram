@@ -5,12 +5,13 @@
 PGraphics bf_canvas;
 PGraphics bf_cursor;
 PGraphics bf_splash;
+PGraphics bf_brush;
 // GUI
 PGraphics bf_gui;
 PGraphics bf_mix;
 PGraphics bf_window;
 PGraphics bf_swatch;
-PGraphics bf_brush;
+PGraphics bf_bpallete;
 
 // Shaders (sh_*)
 
@@ -103,10 +104,16 @@ void gui_setup(){
 
 // -----------------
 void gui_draw(){
-  col_current = color(v_slide_r.get_val(),v_slide_g.get_val(),v_slide_b.get_val());
+  if (!b_col_change){
+     col_current = col_grab();
+   } else {
+     v_slide_r.set_val(int(red(col_current)));
+     v_slide_g.set_val(int(green(col_current)));
+     v_slide_b.set_val(int(blue(col_current)));
+     b_col_change = false;
+   }
   if (mouseX >= loc_gui[0][0] && mouseX <= loc_gui[0][0]+loc_gui[1][0]&&
       mouseY >= loc_gui[0][1] && mouseY <= loc_gui[0][1]+loc_gui[1][1]){
-
     bf_window.beginDraw();
     v_mix.draw(bf_window);
     bf_window.endDraw();
@@ -116,6 +123,10 @@ void gui_draw(){
     v_slide_g.draw(bf_mix);
     v_slide_b.draw(bf_mix);
     v_mix.draw_but(bf_mix);
+    bf_mix.fill(col_current);
+    bf_mix.stroke(col_gui[2]);
+    bf_mix.strokeWeight(3);
+    bf_mix.rect(0,0,120,120,5);
     bf_mix.endDraw();
 
     bf_gui.beginDraw();
@@ -128,4 +139,19 @@ void gui_draw(){
 // -----------------
 void mouseClicked(){
   v_mix.update_col();
+
+}
+// -----------------
+void mouseDragged(){
+  v_slide_r.adj_val();
+  v_slide_b.adj_val();
+  v_slide_g.adj_val();
+  v_mix.col_get();
+}
+// -----------------
+color col_grab(){
+  int r = int(map(v_slide_r.get_val(),0,100,0,255));
+  int g = int(map(v_slide_g.get_val(),0,100,0,255));
+  int b = int(map(v_slide_b.get_val(),0,100,0,255));
+  return color(r,g,b);
 }
