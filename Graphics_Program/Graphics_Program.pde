@@ -91,11 +91,16 @@ void setup() {
   gui_setup();
   update_bpal();
   gui_draw();
+  canvas_draw();
 }
 // -----------------
 void draw() {
   gui_update();
   image(bf_gui, loc_gui[0][0], loc_gui[0][1]);
+  fill(240);
+  noStroke();
+  rect(loc_canvas[0][0],loc_canvas[0][1],loc_canvas[1][0],loc_canvas[1][1]);
+  image(bf_canvas, loc_canvas[0][0], loc_canvas[0][1]);
 }
 // -----------------
 void gui_setup() {
@@ -174,7 +179,7 @@ void mouseDragged() {
   v_slide_b.adj_val();
   v_slide_g.adj_val();
   v_mix.col_get();
-  image(bf_brush,floor(mouseX-(32/2)),floor(mouseY-(32/2)),32,32);
+  p_draw();
 }
 // -----------------
 color col_grab() {
@@ -190,7 +195,7 @@ void mousePressed(){
   v_mix.col_get();
   v_b_update.set_col(col_current);
   bf_brush = v_b_update.update();
-  image(bf_brush,mouseX-(32/2),mouseY-(32/2),32,32);
+  p_draw();
 }
 void brush_setup(){
 
@@ -260,5 +265,17 @@ void update_bpal(){
     bru.p_set("brush/"+filenames[i]);
     al_bb.add(bru);
 
+  }
+}
+// -----------------
+void canvas_draw(){
+
+}
+void p_draw(){
+  if (mouseX > (loc_canvas[0][0]-5) && mouseX < (loc_canvas[0][0]+loc_canvas[1][0]+5) && mouseY > loc_canvas[0][1]+5 && mouseY < loc_canvas[0][1]+(loc_canvas[1][1]+5)){
+
+    bf_canvas.beginDraw();
+    bf_canvas.image(bf_brush,mouseX-(32/2),mouseY-(32/2),32,32);
+    bf_canvas.endDraw();
   }
 }
