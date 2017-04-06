@@ -55,8 +55,7 @@ ArrayList<c_button> al_bb = new ArrayList<c_button>();
 
 // images (ig_*)
 
-PImage ig_current;
-PImage ig_import;
+PImage ig_default;
 PImage ig_splash;
 
 // logic Booleans (b_*)
@@ -84,7 +83,7 @@ PShape v_sav;
 // -----------------
 void setup() {
 
-  ig_import = loadImage("brush/01.png");
+  ig_default = loadImage("brush/01.png");
   ig_splash = loadImage("splash.png");
   b_splash = true;
   col_current = color(150,150,150);
@@ -211,7 +210,7 @@ void mousePressed(){
 }
 void brush_setup(){
 
-  v_b_update = new c_brush(ig_import, col_current, sh_brush);
+  v_b_update = new c_brush(ig_default, col_current, sh_brush);
   bf_brush = v_b_update.update();
 }
 void settings(){
