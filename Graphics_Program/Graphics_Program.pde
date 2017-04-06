@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption.*;
 // Main
 PGraphics bf_canvas;
 PGraphics bf_cursor;
-PGraphics bf_splash;
+
 PGraphics bf_brush;
 // GUI
 PGraphics bf_gui;
@@ -57,11 +57,13 @@ ArrayList<c_button> al_bb = new ArrayList<c_button>();
 
 PImage ig_current;
 PImage ig_import;
+PImage ig_splash;
 
 // logic Booleans (b_*)
 
 boolean b_col_change = false;
 boolean b_loading = false;
+boolean b_splash;
 
 // various (v_*)
 c_button[] v_def_buts = new c_button[7];
@@ -83,6 +85,8 @@ PShape v_sav;
 void setup() {
 
   ig_import = loadImage("brush/01.png");
+  ig_splash = loadImage("splash.png");
+  b_splash = true;
   col_current = color(150,150,150);
   background(col_gui[0]);
   bf_gui = createGraphics(loc_gui[1][0], loc_gui[1][1], P2D);
@@ -90,17 +94,28 @@ void setup() {
   sh_brush = loadShader("brush_shad.glsl");
   gui_setup();
   update_bpal();
+
   gui_draw();
   canvas_draw();
 }
 // -----------------
 void draw() {
-  gui_update();
-  image(bf_gui, loc_gui[0][0], loc_gui[0][1]);
-  fill(240);
-  noStroke();
-  rect(loc_canvas[0][0],loc_canvas[0][1],loc_canvas[1][0],loc_canvas[1][1]);
-  image(bf_canvas, loc_canvas[0][0], loc_canvas[0][1]);
+  if (b_splash){
+    image(ig_splash,0,0);
+  } else{
+    gui_update();
+    background(col_gui[0]);
+    image(bf_gui, loc_gui[0][0], loc_gui[0][1]);
+    fill(240);
+    noStroke();
+    rect(loc_canvas[0][0],loc_canvas[0][1],loc_canvas[1][0],loc_canvas[1][1]);
+    image(bf_canvas, loc_canvas[0][0], loc_canvas[0][1]);
+  }
+  if (keyPressed) {
+    if (key == ' ' && b_splash == true) {
+      b_splash = false;
+    }
+  }
 }
 // -----------------
 void gui_setup() {
@@ -153,10 +168,7 @@ void gui_update() {
     v_slide_b.set_val(int(blue(col_current)));
     b_col_change = false;
   }
-  if (mouseX >= loc_gui[0][0] && mouseX <= loc_gui[0][0]+loc_gui[1][0]&&
-    mouseY >= loc_gui[0][1] && mouseY <= loc_gui[0][1]+loc_gui[1][1]) {
-    gui_draw();
-  }
+  gui_draw();
 }
 // -----------------
 void mouseClicked() {
@@ -250,8 +262,6 @@ void gui_draw(){
 // -----------------
 void update_bpal(){
   java.io.File folder = new java.io.File(dataPath("brush"));
-
-  // list the files in the data folder
   String[] filenames = folder.list();
   al_bb.clear();
   c_button bru;
@@ -275,7 +285,7 @@ void p_draw(){
   if (mouseX > (loc_canvas[0][0]-5) && mouseX < (loc_canvas[0][0]+loc_canvas[1][0]+5) && mouseY > loc_canvas[0][1]+5 && mouseY < loc_canvas[0][1]+(loc_canvas[1][1]+5)){
 
     bf_canvas.beginDraw();
-    bf_canvas.image(bf_brush,mouseX-(32/2),mouseY-(32/2),32,32);
+    bf_canvas.image(bf_brush,(mouseX-(32/2))-20,(mouseY-(32/2))-20,32,32);
     bf_canvas.endDraw();
   }
 }
