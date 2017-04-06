@@ -1,10 +1,11 @@
 //-----------------------
-public class c_button {
+class c_button {
 
   int x, y, w, h, ax, ay;
   color val, ov;
   String p_val;
   boolean b_c;
+  PImage img_icon;
   //---
   c_button(int _x, int _y, int _w, int _h, color _def, int _ax, int _ay) {
     x = _x;
@@ -44,8 +45,17 @@ public class c_button {
     }
   }
   //---
+  void p_get() {
+    if (over()){
+      v_b_update.set_brush(img_icon);
+      v_b_update.update();
+    }
+  }
+  //---
   void p_set(String _i) {
     p_val = _i;
+    b_c = false;
+    img_icon = loadImage(p_val);
   }
   //---
   void p_draw(PGraphics _p) {
@@ -53,7 +63,7 @@ public class c_button {
     _p.stroke(col_gui[2]);
     _p.strokeWeight(3);
     _p.rect(x, y, w, h, 5);
-    //_p.image(p_val, x, y, w-5, h-5);
+    _p.image(img_icon, x+5, y+5, w-10, h-10);
     if (over()) {
       _p.fill(ov);
       _p.noStroke();
@@ -84,15 +94,13 @@ public class c_button {
   //---
   void s_add_b(){
     if (over() && !b_c){
-      if (al_bb.size() < 18){
-
-
-        int i_loc = al_cb.size();
-        int i_row = floor(i_loc/6);
-        int i_col = i_loc%6;
-        al_cb.add(new c_button(49*i_col,55+(50*i_row),35,35,col_current,710+(49*i_col),400+(50*i_row)));
-      }
+      v_b_update.add_brush();
     }
+  }
+  //---
+
+  void set_sb(){
+    b_c = false;
   }
 }
 //-----------------------
@@ -270,12 +278,13 @@ class c_mix {
   }
 }
 //-----------------------
-class c_brush {
+public class c_brush {
   int x, y, w, h;
   PImage ig_brush;
   color col_paint;
   PGraphics bf_outputb;
   PShader sh_b;
+  Path path;
   //---
   c_brush(PImage _in, color _c, PShader _b) {
     x=0;
@@ -308,9 +317,39 @@ class c_brush {
     ig_brush = _b;
     w = _b.width;
     h = _b.height;
+    bf_outputb = createGraphics(w, h, P2D);
+    bf_outputb.beginDraw();
+    bf_outputb.clear();
+    bf_outputb.endDraw();
   }
   //---
   void set_col(color _c){
     col_paint = _c;
+  }
+  void add_brush(){
+    selectInput("Select a png to add", "fileSelected", null, this);
+  }
+  //---
+  void fileSelected(File selection){
+    b_loading = true;
+    if (selection == null) println("Window was closed or the user hit cancel.");
+
+    else if (!selection.isFile()) println("\"" + selection + "\" is an invalid file.");
+
+    else {
+      println("User selected " + (path = Paths.get(selection.getAbsolutePath())));
+      Path source = Paths.get(selection.getAbsolutePath());
+      int f_size = al_bb.size();
+      String new_b_name = nf(f_size+1,2)+".png";
+      println(new_b_name);
+      Path new_dir = Paths.get(sketchPath()+"/data/brush/"+new_b_name);
+      println(new_dir);
+      try{
+        Files.copy(source, new_dir);
+      } catch (IOException e) {
+        println("it didnt work");}
+      update_bpal();
+    }
+  b_loading = false;
   }
 }

@@ -1,3 +1,11 @@
+import java.io.File;
+import java.nio.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.nio.file.StandardCopyOption.*;
 // -----------------
 // Buffers (bf_*)
 
@@ -53,6 +61,7 @@ PImage ig_import;
 // logic Booleans (b_*)
 
 boolean b_col_change = false;
+boolean b_loading = false;
 
 // various (v_*)
 c_button[] v_def_buts = new c_button[7];
@@ -80,6 +89,7 @@ void setup() {
   bf_canvas = createGraphics(loc_canvas[1][0], loc_canvas[1][1], P2D);
   sh_brush = loadShader("brush_shad.glsl");
   gui_setup();
+  update_bpal();
   gui_draw();
 }
 // -----------------
@@ -96,6 +106,7 @@ void gui_setup() {
   bf_mix = createGraphics(loc_mix[1][0], loc_mix[1][1], P2D);
   bf_window = createGraphics(loc_window[1][0], loc_window[1][1], P2D);
   bf_swatch = createGraphics(loc_swatch[1][0], loc_swatch[1][1], P2D);
+  bf_bpallete = createGraphics(loc_bpallete[1][0], loc_bpallete[1][1], P2D);
   bf_gui.beginDraw();
   bf_gui.clear();
   bf_gui.endDraw();
@@ -108,6 +119,9 @@ void gui_setup() {
   bf_swatch.beginDraw();
   bf_swatch.clear();
   bf_swatch.endDraw();
+  bf_bpallete.beginDraw();
+  bf_bpallete.clear();
+  bf_bpallete.endDraw();
   v_mix = new c_mix(loc_window[0][0], loc_window[0][1],
     loc_window[1][0], loc_window[1][1],
     col_defaults[1], col_defaults[0], sh_mix,
@@ -119,6 +133,8 @@ void gui_setup() {
     v_def_buts[s] = new c_button(40+(s*35),5,30,30,col_defaults[s],750+(s*35),350);
   }
   v_sav_swatch = new c_button(0,0,35,35,col_gui[3],710,345);
+  v_sav_brush = new c_button(0,0,35,35,col_gui[3],710,565);
+  v_sav_brush.set_sb();
   brush_setup();
 }
 
@@ -144,8 +160,12 @@ void mouseClicked() {
     v_def_buts[s].col_get();
   }
   v_sav_swatch.s_add();
+  v_sav_brush.s_add_b();
   for (c_button b: al_cb){
     b.col_get();
+  }
+  for (c_button b: al_bb){
+    b.p_get();
   }
 }
 // -----------------
@@ -154,7 +174,7 @@ void mouseDragged() {
   v_slide_b.adj_val();
   v_slide_g.adj_val();
   v_mix.col_get();
-  image(bf_brush,floor(mouseX-(ig_import.width/2)),floor(mouseY-(ig_import.height/2)));
+  image(bf_brush,floor(mouseX-(32/2)),floor(mouseY-(32/2)),32,32);
 }
 // -----------------
 color col_grab() {
@@ -170,7 +190,7 @@ void mousePressed(){
   v_mix.col_get();
   v_b_update.set_col(col_current);
   bf_brush = v_b_update.update();
-  image(bf_brush,floor(mouseX-(ig_import.width/2)),floor(mouseY-(ig_import.height/2)));
+  image(bf_brush,mouseX-(32/2),mouseY-(32/2),32,32);
 }
 void brush_setup(){
 
@@ -181,6 +201,7 @@ void settings(){
   smooth();
   size(1020, 780, P2D);
 }
+// -----------------
 void gui_draw(){
   bf_window.beginDraw();
   v_mix.draw(bf_window);
@@ -205,10 +226,39 @@ void gui_draw(){
   }
   v_sav_swatch.s_draw(bf_swatch);
   bf_swatch.endDraw();
+  if (!b_loading){
+    bf_bpallete.beginDraw();
+    for (c_button p: al_bb){
+      p.p_draw(bf_bpallete);
+    }
+    v_sav_brush.s_draw(bf_bpallete);
+    bf_bpallete.endDraw();
+  }
   bf_gui.beginDraw();
   bf_gui.background(col_gui[1]);
   bf_gui.image(bf_mix, loc_mix[0][0], loc_mix[0][1]);
   bf_gui.image(bf_swatch, loc_swatch[0][0], loc_swatch[0][1]);
+  bf_gui.image(bf_bpallete, loc_bpallete[0][0], loc_bpallete[0][1]);
 
   bf_gui.endDraw();
+}
+// -----------------
+void update_bpal(){
+  java.io.File folder = new java.io.File(dataPath("brush"));
+
+  // list the files in the data folder
+  String[] filenames = folder.list();
+  al_bb.clear();
+  c_button bru;
+  // display the filenames
+  for (int i = 0; i < filenames.length; i++) {
+    println(filenames[i]);
+    int i_loc = al_bb.size();
+    int i_row = floor(i_loc/6);
+    int i_col = i_loc%6;
+    bru = new c_button(49*i_col, 55+(50*i_row), 35, 35, col_gui[3], 710+(49*i_col), 620+(50*i_row) );
+    bru.p_set("brush/"+filenames[i]);
+    al_bb.add(bru);
+
+  }
 }
