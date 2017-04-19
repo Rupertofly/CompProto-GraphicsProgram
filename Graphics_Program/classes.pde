@@ -73,6 +73,7 @@ class c_button {
   //---
   void s_draw(PGraphics _p){
     _p.fill(0,0);
+    _p.strokeWeight(3);
     if (over()){
       _p.stroke(col_gui[3]);
     } else {

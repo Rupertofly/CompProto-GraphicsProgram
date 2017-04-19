@@ -266,13 +266,15 @@ void update_bpal(){
   c_button bru;
   // display the filenames
   for (int i = 0; i < filenames.length; i++) {
-    println(filenames[i]);
-    int i_loc = al_bb.size();
-    int i_row = floor(i_loc/6);
-    int i_col = i_loc%6;
-    bru = new c_button(49*i_col, 55+(50*i_row), 35, 35, col_gui[3], 710+(49*i_col), 620+(50*i_row) );
-    bru.p_set("brush/"+filenames[i]);
-    al_bb.add(bru);
+    if (filenames[i].charAt(0) != '.'){
+      println(filenames[i]);
+      int i_loc = al_bb.size();
+      int i_row = floor(i_loc/6);
+      int i_col = i_loc%6;
+      bru = new c_button(49*i_col, 55+(50*i_row), 35, 35, col_gui[3], 710+(49*i_col), 620+(50*i_row) );
+      bru.p_set("brush/"+filenames[i]);
+      al_bb.add(bru);
+    }
 
   }
 }
